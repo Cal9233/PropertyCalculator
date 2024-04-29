@@ -7,14 +7,14 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import CottageIcon from '@mui/icons-material/Cottage';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Link } from 'react-router-dom';
 
-const pages = ['Products', 'Pricing', 'Blog'];
+const pages = ['Properties', 'Calculate'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Navbar() {
@@ -40,12 +40,12 @@ function Navbar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <CottageIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <CottageIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}/>
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -56,7 +56,7 @@ function Navbar() {
               textDecoration: 'none',
             }}
           >
-            Property Calc
+            Property_Calc
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -89,9 +89,29 @@ function Navbar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+                <div key={page}>
+                  {page === 'Calculate' ? (
+                    <Button
+                      key={page}
+                      component={Link}
+                      to="/calculate"
+                      onClick={handleCloseNavMenu}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                      {page}
+                    </Button>
+                  ) : (
+                    <Button
+                      key={page}
+                      component={Link}
+                      to="/"
+                      onClick={handleCloseNavMenu}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                      {page}
+                    </Button>
+                  )}
+                </div>
               ))}
             </Menu>
           </Box>
@@ -112,18 +132,34 @@ function Navbar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Property_Calc
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+          {pages.map((page) => (
+                <React.Fragment key={page}>
+                  {page === 'Calculate' ? (
+                    <Button
+                      key={page}
+                      component={Link}
+                      to="/calculate"
+                      onClick={handleCloseNavMenu}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                      {page}
+                    </Button>
+                  ) : (
+                    <Button
+                      key={page}
+                      component={Link}
+                      to="/"
+                      onClick={handleCloseNavMenu}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                      {page}
+                    </Button>
+                  )}
+                  </React.Fragment>
+                ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
