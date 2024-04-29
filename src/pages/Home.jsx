@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import GoogleMapNav from '../Components/GoogleMapNav';
 import Modal from 'react-responsive-modal';
 import Search from '../Components/Search';
-import Data from '../Components/Common/Data.json';
 
 const Home = () => {
     const [modal, setmodal] = useState(false);
