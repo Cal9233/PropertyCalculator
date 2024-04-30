@@ -1,9 +1,9 @@
-import houseOne from '../img/house-1.jpeg';
-import houseTwo from '../img/house-2.jpeg';
-import houseThree from '../img/house-3.jpeg';
-import houseFour from '../img/house-4.jpeg';
-import houseFive from '../img/house-5.jpeg';
-import houseSix from '../img/house-6.jpeg';
+import houseOne from '../../img/house-1.jpeg';
+import houseTwo from '../../img/house-2.jpeg';
+import houseThree from '../../img/house-3.jpeg';
+import houseFour from '../../img/house-4.jpeg';
+import houseFive from '../../img/house-5.jpeg';
+import houseSix from '../../img/house-6.jpeg';
 const data = {
     listings: [
         {

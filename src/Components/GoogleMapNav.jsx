@@ -1,21 +1,9 @@
-import React, { useState, useEffect } from 'react';
+// GoogleMapNav.js
+import React, { useState } from 'react';
 import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
-import axios from 'axios';
 
-const GoogleMapNav = (props) => {  
-  const [properties, setProperties] = useState([]);
+const GoogleMapNav = ({ properties, google }) => {  
   const [selectedProperty, setSelectedProperty] = useState(null);
-
-  useEffect(() => {
-    // Fetch data from Zillow API
-    axios.get(`ZILLOW_API_URL_HERE?key=YOUR_ZILLOW_API_KEY`)
-      .then(response => {
-        setProperties(response.data.properties); // Assuming the response data is an array of properties
-      })
-      .catch(error => {
-        console.error('Error fetching data from Zillow API:', error);
-      });
-  }, []);
 
   const mapStyles = {
     width: '100%',
@@ -24,15 +12,15 @@ const GoogleMapNav = (props) => {
 
   return (
     <Map
-      google={props.google}
+      google={google}
       zoom={12}
       style={mapStyles}
       initialCenter={{ lat: 37.7749, lng: -122.4194 }} // Default center for the map
     >
       {/* Display markers for each property */}
-      {properties.map(property => (
+      {properties && properties.map(property => (
         <Marker
-          key={property.id}
+          key={property._id} // Assuming _id is the property identifier
           position={{ lat: property.latitude, lng: property.longitude }}
           onClick={() => setSelectedProperty(property)}
         />

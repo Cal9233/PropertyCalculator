@@ -1,37 +1,48 @@
+// Search.js
 import { useState } from "react";
 import SearchIcon from '@mui/icons-material/Search';
+import axios from 'axios';
 
-const Search = ({ setResults }) => {
+const Search = ({ handleOpenModal }) => { // Pass handleOpenModal function as prop
   const [input, setInput] = useState("");
 
   const fetchData = (value) => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((json) => {
-        const results = json.filter((user) => {
-          return (
-            value &&
-            user &&
-            user.name &&
-            user.name.toLowerCase().includes(value)
-          );
-        });
-        setResults(results);
+    axios.get('https://zillow56.p.rapidapi.com/search', {
+      headers: {
+        'X-RapidAPI-Key': `${process.env.REACT_APP_RAPID_API_KEY}`,
+        'X-RapidAPI-Host': 'zillow56.p.rapidapi.com'
+      },
+      params: {
+        searchTerm: value // Pass the search term to the Zillow API
+      }
+    })
+      .then(response => {
+        const results = response.data.results; // Assuming the response data has a 'results' property containing the properties
+        handleOpenModal(results); // Call handleOpenModal with the search results
+      })
+      .catch(error => {
+        console.error('Error fetching data from Zillow API:', error);
       });
   };
 
   const handleChange = (value) => {
     setInput(value);
-    fetchData(value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      fetchData(input);
+    }
   };
 
   return (
     <div className="input-wrapper">
       <SearchIcon id="search-icon" />
       <input
-        placeholder="State, City, Zip, or Address..."
+        placeholder="Neighborhood, City, Zip, or Address..."
         value={input}
         onChange={(e) => handleChange(e.target.value)}
+        onKeyDown={handleKeyDown} // Call handleKeyDown on key press
       />
     </div>
   );
