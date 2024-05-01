@@ -8,12 +8,15 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   // const [modal, setModal] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [properties, setProperties] = useState([]);
   const [locationData, setLocationData] = useState(null);
+  const history = useNavigate(); 
 
   const handleSearchModal = (property) => {
     setProperties(property);
@@ -25,15 +28,15 @@ const Home = () => {
     // setModal(true);
   };
 
-  const handleCloseModal = () => {
-    setSelectedProperty(null);
-    // setModal(false);
+  const handleSelectedProperty = (property) => {
+    console.log("Selected property:", property);
+    setSelectedProperty(property);
   };
 
-  const handleSelectedProperty = (property) => {
-    setSelectedProperty(property);
-    // setModal(true);
-  };
+  const handleCalculateClick = () => {
+    console.log("Selected property before navigation:", selectedProperty);
+    history('/calculate', { state: { selectedProperty } });
+  }
 
   return (
     <Container maxWidth="xl">
@@ -56,21 +59,30 @@ const Home = () => {
           </Grid>
           <Grid item xs={5}>
             {selectedProperty ? (
-              <div className="property_single">
-                <div className="flex">
-                  <div className="w-full">
-                    <img
-                      src={selectedProperty.imgSrc}
-                      style={{ width: "200px", height: "200px" }}
-                      alt="img"
-                    />
-                  </div>
-                  <div className="w-full ml-3">
-                    <h1>{`Price: $${selectedProperty.price}`}</h1>
-                    <h2>{`${selectedProperty.streetAddress}, ${selectedProperty.state}, ${selectedProperty.zipcode}`}</h2>
-                  </div>
-                </div>
-              </div>
+                      <Grid item md={6}>
+                      <Card sx={{ maxWidth: 300 }}>
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={selectedProperty.imgSrc}
+                          alt="img"
+                        />
+                        <CardContent sx={{ height: 120 }}>
+                          <Typography
+                            gutterBottom
+                            variant="h5"
+                            component="div"
+                          >
+                            {`Price: $${selectedProperty.price}`}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {selectedProperty.streetAddress}, {selectedProperty.state},{" "}
+                            {selectedProperty.zipcode}
+                          </Typography>
+                          <Button variant="outlined" onClick={handleCalculateClick}>Calculate</Button>
+                        </CardContent>
+                      </Card>
+                    </Grid>
             ) : (
               <div className="properties">
                 <Grid container columnSpacing={1} rowSpacing={1}>

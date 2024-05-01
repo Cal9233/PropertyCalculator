@@ -5,11 +5,12 @@ import Result from "./Result";
 import SliderSelect from "./SliderSelect";
 import TenureSelect from "./TenureSelect";
 
-const Calculator = () => {
+const Calculator = ({selectedProperty}) => {
+  console.log(selectedProperty)
   const [data, setData] = useState({
-    homeValue: 3000,
-    downPayment: 3000 * 0.2,
-    loanAmount: 3000 * 0.8,
+    homeValue: selectedProperty?.price !== undefined ? selectedProperty?.price : 3000,
+    downPayment: selectedProperty?.price !== undefined ? selectedProperty?.price * 0.2 : 3000 * 0.2,
+    loanAmount: selectedProperty?.price !== undefined ? selectedProperty?.price * 0.8 : 3000 * 0.8,
     loanTerm: 5,
     interestRate: 5,
   })
@@ -17,13 +18,13 @@ const Calculator = () => {
     <div>
       <Container maxWidth="xl" sx={{marginTop:4}}>
           <Grid container spacing={5} alignItems="center">
-          <Grid item xs={12} md={6}>
-              <SliderSelect data={data} setData={setData}/>
-              <TenureSelect data={data} setData={setData}/>
-          </Grid>
-          <Grid item xs={12} md={6}>
-              <Result data={data}/>
-          </Grid>
+            <Grid item xs={12} md={6}>
+                <SliderSelect data={data} setData={setData}/>
+                <TenureSelect data={data} setData={setData}/>
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <Result data={data}/>
+            </Grid>
           </Grid>
       </Container>
   </div>
