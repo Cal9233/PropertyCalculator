@@ -2,7 +2,7 @@ import React from 'react'
 import SliderComponent from "./Common/SliderComponent";
 
 const SliderSelect = ({ data, setData }) => {
-    const bank_limit = data.homeValue;
+    const bank_limit = 3000000;
     return (
       <div>
         <SliderComponent
