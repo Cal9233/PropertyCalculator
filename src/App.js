@@ -1,33 +1,35 @@
 import React from "react";
-import Home from "./pages/Home";
 import Navbar from "./Components/Navbar";
 import Calculations from "./pages/Calculations";
+import Home from "./pages/Home";
 
-import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { Box } from "@mui/material";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AppProvider } from "./Context/AppProvider";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Box sx={{ padding: "10px" }}>
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/calculate" element={<Calculations />} />
-        </Routes>
-      </Box>
-    </BrowserRouter>
+    <AppProvider>
+      <BrowserRouter>
+        <Navbar />
+        <Box sx={{ padding: "10px" }}>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/calculate" element={<Calculations />} />
+          </Routes>
+        </Box>
+      </BrowserRouter>
+    </AppProvider>
   );
 }
 
 export default App;
 
-//If you make any changes and save while you are on the /calculate page you will get a 
+//If you make any changes and save while you are on the /calculate page you will get a
 //Maximum call stack size exceeded
 //RangeError: Maximum call stack size exceeded
 
-
-//In SliderSelect component the bank limit is set to home value, if I were to lower home value it would also lower the bank limit for some reason. 
+//In SliderSelect component the bank limit is set to home value, if I were to lower home value it would also lower the bank limit for some reason.
 //For example if Home Limit is 200,000 and I lower the value it updates data.homeValue to the new value, only fix for this is to probably set a hard number
 
 //Using the sliders is so slow, might be due to huge number amount, how can we make this faster?

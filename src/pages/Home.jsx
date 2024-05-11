@@ -8,32 +8,25 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleMapNav from "../Components/GoogleMapNav";
 import Search from "../Components/Search";
+import { useAppContext } from "../Context/AppProvider.jsx";
 
 const Home = () => {
-  // const [modal, setModal] = useState(false);
-  const [selectedProperty, setSelectedProperty] = useState(null);
-  const [properties, setProperties] = useState([]);
+  const { properties, loadProperties, selectedProperty, onSelectProperty } =
+    useAppContext();
   const [locationData, setLocationData] = useState(null);
   const history = useNavigate();
 
-  const handleSearchModal = (property) => {
-    setProperties(property);
-    setSelectedProperty(null);
-    // setModal(true);
+  const handleSearchModal = (properties) => {
+    onSelectProperty(null);
+    loadProperties(properties);
   };
   const handleOpenModal = (property) => {
-    setSelectedProperty(property);
-    // setModal(true);
+    onSelectProperty(property);
   };
 
-  const handleSelectedProperty = (property) => {
-    console.log("Selected property:", property);
-    setSelectedProperty(property);
-  };
-
-  const handleCalculateClick = () => {
-    console.log("Selected property before navigation:", selectedProperty);
-    history("/calculate", { state: { selectedProperty } });
+  const handleCalculateClick = (property) => {
+    onSelectProperty(property);
+    history("/calculate");
   };
 
   return (
@@ -42,7 +35,6 @@ const Home = () => {
       <Grid item xs={12} sx={{ marginTop: 2, marginBottom: 2 }}>
         <Search
           handleSearchModal={handleSearchModal}
-          setProperties={setProperties}
           setLocationData={setLocationData}
         />
       </Grid>
@@ -51,7 +43,6 @@ const Home = () => {
           <GoogleMapNav
             properties={properties}
             handleOpenModal={handleOpenModal}
-            handleSelectedProperty={handleSelectedProperty}
             mapCenter={locationData ? locationData.coords : null}
           />
         </Grid>
@@ -73,7 +64,10 @@ const Home = () => {
                     {selectedProperty.streetAddress}, {selectedProperty.state},{" "}
                     {selectedProperty.zipcode}
                   </Typography>
-                  <Button variant="outlined" onClick={handleCalculateClick}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleCalculateClick(selectedProperty)}
+                  >
                     Calculate
                   </Button>
                 </CardContent>
@@ -106,7 +100,7 @@ const Home = () => {
                           <Button
                             sx={{ marginTop: 1 }}
                             variant="outlined"
-                            onClick={handleCalculateClick}
+                            onClick={() => handleCalculateClick(property)}
                           >
                             Calculate
                           </Button>

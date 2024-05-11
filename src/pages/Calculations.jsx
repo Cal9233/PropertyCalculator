@@ -1,17 +1,8 @@
-import React from 'react';
-import Calculator from '../Components/Calculator';
-import { useLocation } from 'react-router-dom';
+import React from "react";
+import Calculator from "../Components/Calculator";
 
 const Calculations = () => {
-    const location = useLocation();
-    const selectedProperty = location.state?.selectedProperty || null;
-    return (
-        <>
-            <div>
-                <Calculator selectedProperty={selectedProperty} />
-            </div>
-        </>
-    )
-}
+  return <Calculator />;
+};
 
-export default Calculations
+export default Calculations;
