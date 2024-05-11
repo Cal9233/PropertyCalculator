@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Button, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { Container } from "@mui/system";
+import React, { useEffect, useState } from "react";
+import { useAppContext } from "../Context/AppProvider";
+import MoreFilter from "./MoreFilter";
 import Result from "./Result";
 import SliderSelect from "./SliderSelect";
 import TenureSelect from "./TenureSelect";
-import MoreFilter from "./MoreFilter";
-import { useAppContext } from "../Context/AppProvider";
 
 const Calculator = () => {
   const { selectedProperty } = useAppContext();
@@ -14,7 +14,7 @@ const Calculator = () => {
     homeValue: 0,
     downPayment: 0,
     loanAmount: 0,
-    loanTerm: 5,
+    tenureYears: 5,
     interestRate: 5,
   });
 
@@ -41,18 +41,6 @@ const Calculator = () => {
             <div style={{ marginTop: "10px" }}>
               <TenureSelect data={data} setData={setData} />
             </div>
-            <Button
-              style={{ marginTop: "10px" }}
-              variant="contained"
-              color="primary"
-              type="submit"
-              fullWidth
-              onClick={() => {
-                setData({ ...data });
-              }}
-            >
-              Calculate
-            </Button>
             <div style={{ marginTop: "10px" }}>
               <MoreFilter data={data} setData={setData} />
             </div>
