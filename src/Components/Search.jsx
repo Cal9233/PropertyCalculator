@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import axios from "axios";
+// import axios from "axios";
 import Data from "../Components/Common/Data";
 
-const Search = ({ handleSearchModal, setProperties, setLocationData }) => {
+const Search = ({ handleSearchModal, setLocationData }) => {
   const [input, setInput] = useState("");
 
   const fetchData = async (value) => {
@@ -22,7 +22,6 @@ const Search = ({ handleSearchModal, setProperties, setLocationData }) => {
       const response = Data;
       //const response = await axios.request(options); // Assuming the response data has a 'results' property containing the properties
       console.log("Response is:", response);
-      setProperties(response);
       setLocationData(response);
       //handleOpenModal(response.data.results); // Call handleOpenModal with the search results
       // handleOpenModal(response)
