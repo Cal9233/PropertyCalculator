@@ -81,7 +81,7 @@ const MoreFilter = ({ data, setData }) => {
             <TextField
               type="number"
               label="HOA fees per month"
-              name="hoa"
+              name="hoaFees"
               value={formData.hoaFees}
               onChange={handleChange}
               fullWidth
@@ -99,7 +99,7 @@ const MoreFilter = ({ data, setData }) => {
             <TextField
               type="number"
               label="Inspection costs"
-              name="inspection"
+              name="inspectionCosts"
               value={formData.inspectionCosts}
               onChange={handleChange}
               fullWidth

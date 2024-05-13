@@ -21,7 +21,7 @@ const Search = ({ handleSearchModal, setLocationData }) => {
       };
       const response = Data;
       //const response = await axios.request(options); // Assuming the response data has a 'results' property containing the properties
-      console.log("Response is:", response);
+      //console.log("Response is:", response);
       setLocationData(response);
       //handleOpenModal(response.data.results); // Call handleOpenModal with the search results
       // handleOpenModal(response)

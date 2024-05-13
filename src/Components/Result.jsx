@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Stack, Typography } from "@mui/material";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
+import { Pie, Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -51,13 +51,6 @@ const calculateMonthlyPayment = ({
     attorneyCharges +
     appraisalFees;
 
-  // console.log({
-  //   totalMonthlyPayment,
-  //   totalInterestGenerated,
-  //   homeValue,
-  //   propertyTax,
-  // });
-
   return {
     totalMonthlyPayment: parseInt(totalMonthlyPayment)?.toFixed(2),
     totalInterestGenerated,
@@ -68,11 +61,24 @@ const calculateMonthlyPayment = ({
 };
 
 const Result = ({ data }) => {
+  const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const chartRef = useRef(null);
+
+  useEffect(() => {
+    // Set a timeout to delay the effect by 500 milliseconds
+    const timeout = setTimeout(() => {
+      const { totalMonthlyPayment: payment } = calculateMonthlyPayment(data);
+      setMonthlyPayment(payment);
+    }, 500);
+
+    // Clear the timeout on component unmount or when data changes
+    return () => clearTimeout(timeout);
+  }, [data]);
+
   const {
     homeValue,
     propertyTax,
     homeOwnerInsurance,
-    totalMonthlyPayment,
     totalInterestGenerated,
   } = calculateMonthlyPayment(data);
 
@@ -104,18 +110,91 @@ const Result = ({ data }) => {
     ],
   };
 
-  console.log({ totalMonthlyPayment });
+  const options = {
+    responsive:true,
+    cutout:'80%',
+    layout:{
+      padding:20,
+    },
+    borderWidth:'',
+    plugins: {
+    },
+  };
+
+  const myPlugin = {
+    id: "myPlugin",
+    beforeDraw(chart) {
+      const { width } = chart;
+      const { height } = chart;
+      const { ctx } = chart;
+      ctx.restore();
+      const fontSize = (height / 180).toFixed(2);
+      ctx.font = `${fontSize}em sans-serif`;
+      ctx.fillStyle = "white";
+      ctx.textBaseline = "top";
+      const text = `$${monthlyPayment}`;
+      const textX = Math.round((width - ctx.measureText(text).width) / 2);
+      const textY = height / 2;
+      ctx.fillText(text, textX, textY);
+      ctx.save();
+    },
+  };
+
+  useEffect(() => {
+    if (chartRef.current && chartRef.current.chartInstance) {
+      const chartInstance = chartRef.current.chartInstance;
+      chartInstance.options.plugins.myPlugin = {
+        id: "myPlugin",
+        beforeDraw(chart) {
+          const { width } = chart;
+          const { height } = chart;
+          const { ctx } = chart;
+          ctx.restore();
+          const fontSize = (height / 180).toFixed(2);
+          ctx.font = `${fontSize}em sans-serif`;
+          ctx.fillStyle = "white";
+          ctx.textBaseline = "top";
+          const text = `$${monthlyPayment}`;
+          const textX = Math.round((width - ctx.measureText(text).width) / 2);
+          const textY = height / 2;
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        },
+      };
+      chartInstance.update();
+    }
+  }, [monthlyPayment]);
+
+  function updateBarGraph(chart, label, color, data) {
+    chart.data.datasets.pop();
+    chart.data.datasets.push({
+      label: label,
+      backgroundColor: color,
+      data: data
+    });
+    chart.update();
+  }
+
+  // setInterval(function() {
+  //   updatedDataSet = [Math.random(), Math.random(), Math.random(), Math.random()];
+  //   updateBarGraph(barChart, 'Prediction', colouarray, updatedDataSet);
+  // }, 1000);
 
   return (
     <Stack gap={3}>
-      {totalMonthlyPayment && totalMonthlyPayment !== "NaN" ? (
+      {monthlyPayment && monthlyPayment !== "NaN" ? (
         <>
           <Typography textAlign="center" variant="h5">
-            Monthly Payment: $ {totalMonthlyPayment || 0}
+            Monthly Payment: $ {monthlyPayment || 0}
           </Typography>
           <Stack direction="row" justifyContent="center">
             <div style={{ width: 500, height: 500 }}>
-              <Pie data={pieChartData} />
+              <Doughnut
+                data={pieChartData}
+                options={options}
+                plugins={[myPlugin]}
+                //ref={chartRef}
+              />
             </div>
           </Stack>
         </>
@@ -125,5 +204,6 @@ const Result = ({ data }) => {
     </Stack>
   );
 };
+
 
 export default Result;

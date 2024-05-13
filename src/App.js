@@ -25,14 +25,4 @@ function App() {
 
 export default App;
 
-//If you make any changes and save while you are on the /calculate page you will get a
-//Maximum call stack size exceeded
-//RangeError: Maximum call stack size exceeded
-
-//In SliderSelect component the bank limit is set to home value, if I were to lower home value it would also lower the bank limit for some reason.
-//For example if Home Limit is 200,000 and I lower the value it updates data.homeValue to the new value, only fix for this is to probably set a hard number
-
-//Using the sliders is so slow, might be due to huge number amount, how can we make this faster?
-
-//I want to be able to have the Results pie chart be updated with values from MoreFilter (The bottom button saying "Taxes, etc etc") if they exist to show new monthly payments.
-//And Im pretty sure monthy payments is in correct considering it says Monthly Payment: $ 2109426496727.55 which is worth more than the house, need to check and see what is wrong with calculations
+//Need to update the chart monthlyPayment text as monthlyPayment changes. Is not dyamic
