@@ -105,6 +105,89 @@ const Result = ({ data }) => {
     setAdditionalLabels(labels);
     setAdditionalValues(dataValue);
   }, [propertyTax, homeOwnerInsurance]);
+  
+  if(propertyTax > 0 && homeOwnerInsurance === 0){
+    console.log('if')
+    pieChartData = {
+      labels: ["Principle", "Interest", "Property tax"],
+      datasets: [
+        {
+          label: "Ratio of Principle and Interest",
+          data: [
+            homeValue,
+            totalInterestGenerated,
+            propertyTax
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)"
+          ],
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)"
+          ],
+          borderWidth: 1,
+        },
+      ],
+    }
+  } else if(propertyTax === 0 && homeOwnerInsurance > 0){
+    console.log('else if 1')
+    pieChartData = {
+      labels: ["Principle", "Interest", "Homeowner's insurance"],
+      datasets: [
+        {
+          label: "Ratio of Principle and Interest",
+          data: [
+            homeValue,
+            totalInterestGenerated,
+            homeOwnerInsurance,
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+          ],
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(75, 192, 192, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  } else if(propertyTax > 0 && homeOwnerInsurance > 0){
+    console.log('else if 2')
+    pieChartData = {
+      labels: ["Principle", "Interest", "Property tax", "Homeowner's insurance"],
+      datasets: [
+        {
+          label: "Ratio of Principle and Interest",
+          data: [
+            homeValue,
+            totalInterestGenerated,
+            propertyTax,
+            homeOwnerInsurance,
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+          ],
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  }
 
   const options = {
     responsive: true,
@@ -141,6 +224,24 @@ const Result = ({ data }) => {
     if (chartRef.current) {
       const chartInstance = chartRef.current;
       chartInstance.config.plugins[0].beforeDraw = plugin[0].beforeDraw;
+//       chartInstance.config.plugins[0] = {
+//         id: "myPlugin",
+//         beforeDraw(chart) {
+//           const { width } = chart;
+//           const { height } = chart;
+//           const { ctx } = chart;
+//           ctx.restore();
+//           const fontSize = (height / 180).toFixed(2);
+//           ctx.font = `${fontSize}em sans-serif`;
+//           ctx.fillStyle = "white";
+//           ctx.textBaseline = "top";
+//           const text = `$${monthlyPayment}`;
+//           const textX = Math.round((width - ctx.measureText(text).width) / 2);
+//           const textY = height / 2;
+//           ctx.fillText(text, textX, textY);
+//           ctx.save();
+//         },
+//       };
       chartInstance.update();
     }
   }, [monthlyPayment]);
@@ -182,7 +283,7 @@ const Result = ({ data }) => {
                   ],
                 }}
                 options={options}
-                plugins={plugin}
+                plugins={[myPlugin]}
                 ref={chartRef}
               />
             </div>

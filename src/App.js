@@ -25,6 +25,4 @@ function App() {
 
 export default App;
 
-//Need to update the chart monthlyPayment text as monthlyPayment changes. Is not dyamic
 //if else statements for property tax and homeowner insurance tax dynamically add keys to doughnut, but if you remove them and readd them they wont come back
-//bank limit in sliderSelect component is supposed to be homeValue. But if you have it homeValue than you cant use the slider
