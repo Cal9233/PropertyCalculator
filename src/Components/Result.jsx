@@ -106,7 +106,6 @@ const Result = ({ data }) => {
     ],
   }
 
-  console.log(homeOwnerInsurance)
   if(propertyTax > 0 && homeOwnerInsurance === 0){
     console.log('if')
     pieChartData = {
@@ -221,9 +220,9 @@ const Result = ({ data }) => {
   };
 
   useEffect(() => {
-    if (chartRef.current && chartRef.current.chartInstance) {
-      const chartInstance = chartRef.current.chartInstance;
-      chartInstance.options.plugins.myPlugin = {
+    if (chartRef.current) {
+      const chartInstance = chartRef.current;
+      chartInstance.config.plugins[0] = {
         id: "myPlugin",
         beforeDraw(chart) {
           const { width } = chart;
@@ -245,21 +244,6 @@ const Result = ({ data }) => {
     }
   }, [monthlyPayment]);
 
-  function updateBarGraph(chart, label, color, data) {
-    chart.data.datasets.pop();
-    chart.data.datasets.push({
-      label: label,
-      backgroundColor: color,
-      data: data
-    });
-    chart.update();
-  }
-
-  // setInterval(function() {
-  //   updatedDataSet = [Math.random(), Math.random(), Math.random(), Math.random()];
-  //   updateBarGraph(barChart, 'Prediction', colouarray, updatedDataSet);
-  // }, 1000);
-
   return (
     <Stack gap={3}>
       {monthlyPayment && monthlyPayment !== "NaN" ? (
@@ -273,7 +257,7 @@ const Result = ({ data }) => {
                 data={pieChartData}
                 options={options}
                 plugins={[myPlugin]}
-                //ref={chartRef}
+                ref={chartRef}
               />
             </div>
           </Stack>
