@@ -82,33 +82,113 @@ const Result = ({ data }) => {
     totalInterestGenerated,
   } = calculateMonthlyPayment(data);
 
-  const pieChartData = {
-    labels: ["Principle", "Interest", "Property tax", "Homeowner's insurance"],
+  let pieChartData;
+
+  pieChartData = {
+    labels: ["Principle", "Interest"],
     datasets: [
       {
         label: "Ratio of Principle and Interest",
         data: [
           homeValue,
           totalInterestGenerated,
-          propertyTax,
-          homeOwnerInsurance,
         ],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
         ],
         borderColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
         ],
         borderWidth: 1,
       },
     ],
-  };
+  }
+
+  console.log(homeOwnerInsurance)
+  if(propertyTax > 0 && homeOwnerInsurance === 0){
+    console.log('if')
+    pieChartData = {
+      labels: ["Principle", "Interest", "Property tax"],
+      datasets: [
+        {
+          label: "Ratio of Principle and Interest",
+          data: [
+            homeValue,
+            totalInterestGenerated,
+            propertyTax
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)"
+          ],
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)"
+          ],
+          borderWidth: 1,
+        },
+      ],
+    }
+  } else if(propertyTax === 0 && homeOwnerInsurance > 0){
+    console.log('else if 1')
+    pieChartData = {
+      labels: ["Principle", "Interest", "Homeowner's insurance"],
+      datasets: [
+        {
+          label: "Ratio of Principle and Interest",
+          data: [
+            homeValue,
+            totalInterestGenerated,
+            homeOwnerInsurance,
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+          ],
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(75, 192, 192, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  } else if(propertyTax > 0 && homeOwnerInsurance > 0){
+    console.log('else if 2')
+    pieChartData = {
+      labels: ["Principle", "Interest", "Property tax", "Homeowner's insurance"],
+      datasets: [
+        {
+          label: "Ratio of Principle and Interest",
+          data: [
+            homeValue,
+            totalInterestGenerated,
+            propertyTax,
+            homeOwnerInsurance,
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+          ],
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  }
 
   const options = {
     responsive:true,
