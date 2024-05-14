@@ -65,10 +65,9 @@ const calculateMonthlyPayment = ({
 };
 
 const Result = ({ data }) => {
-  const { homeValue, propertyTax, homeOwnerInsurance, totalInterestGenerated } =
-    calculateMonthlyPayment(data);
+  const { homeValue, propertyTax, homeOwnerInsurance, totalInterestGenerated, pmi, hoaFees, utilities, inspectionCosts, attorneyCharges, appraisalFees } = calculateMonthlyPayment(data);
 
-  const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const [monthlyPayments, setMonthlyPayments] = useState(0);
 
   const [additionalLabels, setAdditionalLabels] = useState([]);
   const [additionalValues, setAdditionalValues] = useState([]);
@@ -79,7 +78,7 @@ const Result = ({ data }) => {
     // Set a timeout to delay the effect by 500 milliseconds
     const timeout = setTimeout(() => {
       const { totalMonthlyPayment: payment } = calculateMonthlyPayment(data);
-      setMonthlyPayment(payment);
+      setMonthlyPayments(payment);
     }, 500);
 
     // Clear the timeout on component unmount or when data changes
@@ -87,8 +86,8 @@ const Result = ({ data }) => {
   }, [data]);
 
   useEffect(() => {
-    const values = removeEmptyProps({ propertyTax, homeOwnerInsurance });
-
+    const values = removeEmptyProps({ propertyTax, homeOwnerInsurance, pmi, hoaFees, utilities, inspectionCosts, attorneyCharges, appraisalFees  });
+console.log(values)
     const labels = [];
     const dataValue = [];
 
@@ -99,6 +98,24 @@ const Result = ({ data }) => {
       } else if (key === "homeOwnerInsurance") {
         labels.push("Homeowner's insurance");
         dataValue.push(value);
+      } else if (key === "pmi") {
+        labels.push("PMI");
+        dataValue.push(value);
+      } else if (key === "hoaFees") {
+        labels.push("HOA");
+        dataValue.push(value);
+      } else if (key === "utilities") {
+        labels.push("Utilities");
+        dataValue.push(value);
+      } else if (key === "inspectionCosts") {
+        labels.push("Inspection Costs");
+        dataValue.push(value);
+      } else if (key === "attorneyCharges") {
+        labels.push("Attorny Charges");
+        dataValue.push(value);
+      } else if (key === "appraisalFees") {
+        labels.push("Appraisal Fees");
+        dataValue.push(value);
       }
     });
 
@@ -106,89 +123,6 @@ const Result = ({ data }) => {
     setAdditionalValues(dataValue);
   }, [propertyTax, homeOwnerInsurance]);
   
-  if(propertyTax > 0 && homeOwnerInsurance === 0){
-    console.log('if')
-    pieChartData = {
-      labels: ["Principle", "Interest", "Property tax"],
-      datasets: [
-        {
-          label: "Ratio of Principle and Interest",
-          data: [
-            homeValue,
-            totalInterestGenerated,
-            propertyTax
-          ],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)"
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)"
-          ],
-          borderWidth: 1,
-        },
-      ],
-    }
-  } else if(propertyTax === 0 && homeOwnerInsurance > 0){
-    console.log('else if 1')
-    pieChartData = {
-      labels: ["Principle", "Interest", "Homeowner's insurance"],
-      datasets: [
-        {
-          label: "Ratio of Principle and Interest",
-          data: [
-            homeValue,
-            totalInterestGenerated,
-            homeOwnerInsurance,
-          ],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(75, 192, 192, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
-  } else if(propertyTax > 0 && homeOwnerInsurance > 0){
-    console.log('else if 2')
-    pieChartData = {
-      labels: ["Principle", "Interest", "Property tax", "Homeowner's insurance"],
-      datasets: [
-        {
-          label: "Ratio of Principle and Interest",
-          data: [
-            homeValue,
-            totalInterestGenerated,
-            propertyTax,
-            homeOwnerInsurance,
-          ],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
-  }
-
   const options = {
     responsive: true,
     cutout: "80%",
@@ -211,7 +145,7 @@ const Result = ({ data }) => {
         ctx.font = `${fontSize}em sans-serif`;
         ctx.fillStyle = "white";
         ctx.textBaseline = "top";
-        const text = `$${monthlyPayment}`;
+        const text = `$${monthlyPayments}`;
         const textX = Math.round((width - ctx.measureText(text).width) / 2);
         const textY = height / 2;
         ctx.fillText(text, textX, textY);
@@ -224,34 +158,16 @@ const Result = ({ data }) => {
     if (chartRef.current) {
       const chartInstance = chartRef.current;
       chartInstance.config.plugins[0].beforeDraw = plugin[0].beforeDraw;
-//       chartInstance.config.plugins[0] = {
-//         id: "myPlugin",
-//         beforeDraw(chart) {
-//           const { width } = chart;
-//           const { height } = chart;
-//           const { ctx } = chart;
-//           ctx.restore();
-//           const fontSize = (height / 180).toFixed(2);
-//           ctx.font = `${fontSize}em sans-serif`;
-//           ctx.fillStyle = "white";
-//           ctx.textBaseline = "top";
-//           const text = `$${monthlyPayment}`;
-//           const textX = Math.round((width - ctx.measureText(text).width) / 2);
-//           const textY = height / 2;
-//           ctx.fillText(text, textX, textY);
-//           ctx.save();
-//         },
-//       };
       chartInstance.update();
     }
-  }, [monthlyPayment]);
+  }, [monthlyPayments]);
 
   return (
     <Stack gap={3}>
-      {monthlyPayment && monthlyPayment !== "NaN" ? (
+      {monthlyPayments && monthlyPayments !== "NaN" ? (
         <>
           <Typography textAlign="center" variant="h5">
-            Monthly Payment: $ {monthlyPayment || 0}
+            Monthly Payment: $ {monthlyPayments || 0}
           </Typography>
           <Stack direction="row" justifyContent="center">
             <div style={{ width: 500, height: 500 }}>
@@ -272,18 +188,32 @@ const Result = ({ data }) => {
                         "rgba(54, 162, 235, 0.2)",
                         "rgba(255, 206, 86, 0.2)",
                         "rgba(75, 192, 192, 0.2)",
+                        "rgba(153, 102, 255, 1)",
+                        "rgba(255, 159, 64, 1)",
+                        "rgba(0, 204, 102, 1)",
+                        "rgba(255, 0, 255, 1)",
+                        "rgba(0, 204, 204, 1)",
+                        "rgba(255, 153, 0, 1)",
+                        "rgba(204, 0, 102, 1)",
                       ],
                       borderColor: [
                         "rgba(255, 99, 132, 1)",
                         "rgba(54, 162, 235, 1)",
                         "rgba(255, 206, 86, 1)",
                         "rgba(75, 192, 192, 1)",
-                      ],
+                        "rgba(153, 102, 255, 1)",
+                        "rgba(255, 159, 64, 1)",
+                        "rgba(0, 204, 102, 1)",
+                        "rgba(255, 0, 255, 1)",
+                        "rgba(0, 204, 204, 1)",
+                        "rgba(255, 153, 0, 1)",
+                        "rgba(204, 0, 102, 1)",
+                    ],
                     },
                   ],
                 }}
                 options={options}
-                plugins={[myPlugin]}
+                plugins={plugin}
                 ref={chartRef}
               />
             </div>
