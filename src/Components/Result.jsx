@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
 import { Stack, Typography } from "@mui/material";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie, Doughnut } from "react-chartjs-2";
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
+import React, { useEffect, useRef, useState } from "react";
+import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+
+export const removeEmptyProps = (obj) => {
+  return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v));
+};
 
 const calculateMonthlyPayment = ({
   homeValue,
@@ -61,7 +65,14 @@ const calculateMonthlyPayment = ({
 };
 
 const Result = ({ data }) => {
+  const { homeValue, propertyTax, homeOwnerInsurance, totalInterestGenerated } =
+    calculateMonthlyPayment(data);
+
   const [monthlyPayment, setMonthlyPayment] = useState(0);
+
+  const [additionalLabels, setAdditionalLabels] = useState([]);
+  const [additionalValues, setAdditionalValues] = useState([]);
+
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -75,190 +86,64 @@ const Result = ({ data }) => {
     return () => clearTimeout(timeout);
   }, [data]);
 
-  const {
-    homeValue,
-    propertyTax,
-    homeOwnerInsurance,
-    totalInterestGenerated,
-  } = calculateMonthlyPayment(data);
+  useEffect(() => {
+    const values = removeEmptyProps({ propertyTax, homeOwnerInsurance });
 
-  let pieChartData;
+    const labels = [];
+    const dataValue = [];
 
-  pieChartData = {
-    labels: ["Principle", "Interest"],
-    datasets: [
-      {
-        label: "Ratio of Principle and Interest",
-        data: [
-          homeValue,
-          totalInterestGenerated,
-        ],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  }
+    Object.entries(values).forEach(([key, value]) => {
+      if (key === "propertyTax") {
+        labels.push("Property tax");
+        dataValue.push(value);
+      } else if (key === "homeOwnerInsurance") {
+        labels.push("Homeowner's insurance");
+        dataValue.push(value);
+      }
+    });
 
-  console.log(homeOwnerInsurance)
-  if(propertyTax > 0 && homeOwnerInsurance === 0){
-    console.log('if')
-    pieChartData = {
-      labels: ["Principle", "Interest", "Property tax"],
-      datasets: [
-        {
-          label: "Ratio of Principle and Interest",
-          data: [
-            homeValue,
-            totalInterestGenerated,
-            propertyTax
-          ],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)"
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)"
-          ],
-          borderWidth: 1,
-        },
-      ],
-    }
-  } else if(propertyTax === 0 && homeOwnerInsurance > 0){
-    console.log('else if 1')
-    pieChartData = {
-      labels: ["Principle", "Interest", "Homeowner's insurance"],
-      datasets: [
-        {
-          label: "Ratio of Principle and Interest",
-          data: [
-            homeValue,
-            totalInterestGenerated,
-            homeOwnerInsurance,
-          ],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(75, 192, 192, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
-  } else if(propertyTax > 0 && homeOwnerInsurance > 0){
-    console.log('else if 2')
-    pieChartData = {
-      labels: ["Principle", "Interest", "Property tax", "Homeowner's insurance"],
-      datasets: [
-        {
-          label: "Ratio of Principle and Interest",
-          data: [
-            homeValue,
-            totalInterestGenerated,
-            propertyTax,
-            homeOwnerInsurance,
-          ],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
-  }
+    setAdditionalLabels(labels);
+    setAdditionalValues(dataValue);
+  }, [propertyTax, homeOwnerInsurance]);
 
   const options = {
-    responsive:true,
-    cutout:'80%',
-    layout:{
-      padding:20,
+    responsive: true,
+    cutout: "80%",
+    layout: {
+      padding: 20,
     },
-    borderWidth:'',
-    plugins: {
-    },
+    borderWidth: "",
+    plugins: {},
   };
 
-  const myPlugin = {
-    id: "myPlugin",
-    beforeDraw(chart) {
-      const { width } = chart;
-      const { height } = chart;
-      const { ctx } = chart;
-      ctx.restore();
-      const fontSize = (height / 180).toFixed(2);
-      ctx.font = `${fontSize}em sans-serif`;
-      ctx.fillStyle = "white";
-      ctx.textBaseline = "top";
-      const text = `$${monthlyPayment}`;
-      const textX = Math.round((width - ctx.measureText(text).width) / 2);
-      const textY = height / 2;
-      ctx.fillText(text, textX, textY);
-      ctx.save();
+  const plugin = [
+    {
+      id: "myPlugin",
+      beforeDraw(chart) {
+        const { width } = chart;
+        const { height } = chart;
+        const { ctx } = chart;
+        ctx.restore();
+        const fontSize = (height / 180).toFixed(2);
+        ctx.font = `${fontSize}em sans-serif`;
+        ctx.fillStyle = "white";
+        ctx.textBaseline = "top";
+        const text = `$${monthlyPayment}`;
+        const textX = Math.round((width - ctx.measureText(text).width) / 2);
+        const textY = height / 2;
+        ctx.fillText(text, textX, textY);
+        ctx.save();
+      },
     },
-  };
+  ];
 
   useEffect(() => {
-    if (chartRef.current && chartRef.current.chartInstance) {
-      const chartInstance = chartRef.current.chartInstance;
-      chartInstance.options.plugins.myPlugin = {
-        id: "myPlugin",
-        beforeDraw(chart) {
-          const { width } = chart;
-          const { height } = chart;
-          const { ctx } = chart;
-          ctx.restore();
-          const fontSize = (height / 180).toFixed(2);
-          ctx.font = `${fontSize}em sans-serif`;
-          ctx.fillStyle = "white";
-          ctx.textBaseline = "top";
-          const text = `$${monthlyPayment}`;
-          const textX = Math.round((width - ctx.measureText(text).width) / 2);
-          const textY = height / 2;
-          ctx.fillText(text, textX, textY);
-          ctx.save();
-        },
-      };
+    if (chartRef.current) {
+      const chartInstance = chartRef.current;
+      chartInstance.config.plugins[0].beforeDraw = plugin[0].beforeDraw;
       chartInstance.update();
     }
   }, [monthlyPayment]);
-
-  function updateBarGraph(chart, label, color, data) {
-    chart.data.datasets.pop();
-    chart.data.datasets.push({
-      label: label,
-      backgroundColor: color,
-      data: data
-    });
-    chart.update();
-  }
-
-  // setInterval(function() {
-  //   updatedDataSet = [Math.random(), Math.random(), Math.random(), Math.random()];
-  //   updateBarGraph(barChart, 'Prediction', colouarray, updatedDataSet);
-  // }, 1000);
 
   return (
     <Stack gap={3}>
@@ -270,10 +155,35 @@ const Result = ({ data }) => {
           <Stack direction="row" justifyContent="center">
             <div style={{ width: 500, height: 500 }}>
               <Doughnut
-                data={pieChartData}
+                data={{
+                  labels: ["Principle", "Interest", ...additionalLabels],
+                  datasets: [
+                    {
+                      label: "Ratio of Principle and Interest",
+                      data: [
+                        homeValue,
+                        totalInterestGenerated,
+                        ...additionalValues,
+                      ],
+                      borderWidth: 1,
+                      backgroundColor: [
+                        "rgba(255, 99, 132, 0.2)",
+                        "rgba(54, 162, 235, 0.2)",
+                        "rgba(255, 206, 86, 0.2)",
+                        "rgba(75, 192, 192, 0.2)",
+                      ],
+                      borderColor: [
+                        "rgba(255, 99, 132, 1)",
+                        "rgba(54, 162, 235, 1)",
+                        "rgba(255, 206, 86, 1)",
+                        "rgba(75, 192, 192, 1)",
+                      ],
+                    },
+                  ],
+                }}
                 options={options}
-                plugins={[myPlugin]}
-                //ref={chartRef}
+                plugins={plugin}
+                ref={chartRef}
               />
             </div>
           </Stack>
@@ -284,6 +194,5 @@ const Result = ({ data }) => {
     </Stack>
   );
 };
-
 
 export default Result;
