@@ -29,9 +29,7 @@ const MoreFilter = ({ data, setData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Merge the new form data with the existing data object
     const newData = { ...data, ...formData };
-    console.log(newData);
     setData(newData);
   };
 

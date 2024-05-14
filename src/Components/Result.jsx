@@ -46,14 +46,14 @@ const calculateMonthlyPayment = ({
   // Add optional costs to monthly payment
   const totalMonthlyPayment =
     monthlyPayment +
-    propertyTax +
-    homeOwnerInsurance +
-    pmi +
-    hoaFees +
-    utilities +
-    inspectionCosts +
-    attorneyCharges +
-    appraisalFees;
+    parseInt(propertyTax) +
+    parseInt(homeOwnerInsurance) +
+    parseInt(pmi) +
+    parseInt(hoaFees) +
+    parseInt(utilities) +
+    parseInt(inspectionCosts) +
+    parseInt(attorneyCharges) +
+    parseInt(appraisalFees);
 
   return {
     totalMonthlyPayment: parseInt(totalMonthlyPayment)?.toFixed(2),
@@ -61,6 +61,12 @@ const calculateMonthlyPayment = ({
     homeValue,
     propertyTax,
     homeOwnerInsurance,
+    pmi,
+    hoaFees,
+    utilities,
+    inspectionCosts,
+    attorneyCharges,
+    appraisalFees 
   };
 };
 
@@ -87,7 +93,6 @@ const Result = ({ data }) => {
 
   useEffect(() => {
     const values = removeEmptyProps({ propertyTax, homeOwnerInsurance, pmi, hoaFees, utilities, inspectionCosts, attorneyCharges, appraisalFees  });
-console.log(values)
     const labels = [];
     const dataValue = [];
 
@@ -118,10 +123,9 @@ console.log(values)
         dataValue.push(value);
       }
     });
-
     setAdditionalLabels(labels);
     setAdditionalValues(dataValue);
-  }, [propertyTax, homeOwnerInsurance]);
+  }, [propertyTax, homeOwnerInsurance, pmi, hoaFees, utilities, inspectionCosts, attorneyCharges, appraisalFees]);
   
   const options = {
     responsive: true,

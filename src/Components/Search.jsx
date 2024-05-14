@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-// import axios from "axios";
-import Data from "../Components/Common/Data";
+import axios from "axios";
+//import Data from "../Components/Common/Data";
 
 const Search = ({ handleSearchModal, setLocationData }) => {
   const [input, setInput] = useState("");
@@ -19,13 +19,10 @@ const Search = ({ handleSearchModal, setLocationData }) => {
           "X-RapidAPI-Host": "zillow56.p.rapidapi.com",
         },
       };
-      const response = Data;
-      //const response = await axios.request(options); // Assuming the response data has a 'results' property containing the properties
-      //console.log("Response is:", response);
+      //const response = Data;
+      const response = await axios.request(options);
       setLocationData(response);
-      //handleOpenModal(response.data.results); // Call handleOpenModal with the search results
-      // handleOpenModal(response)
-      handleSearchModal(response);
+      handleSearchModal(response.data.results);
     } catch (error) {
       console.log(error);
     }
@@ -48,7 +45,7 @@ const Search = ({ handleSearchModal, setLocationData }) => {
         placeholder="Neighborhood, City, Zip, or Address..."
         value={input}
         onChange={(e) => handleChange(e.target.value)}
-        onKeyDown={handleKeyDown} // Call handleKeyDown on key press
+        onKeyDown={handleKeyDown}
       />
     </div>
   );
