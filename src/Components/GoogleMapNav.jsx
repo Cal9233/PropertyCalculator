@@ -44,11 +44,6 @@ const GoogleMapNav = ({ handleOpenModal, properties, google }) => {
     setKey((prevKey) => prevKey + 1); // Increment key to force rerender
   }, [properties]);
 
-  const mapStyles = {
-    width: "100%",
-    height: "100%",
-  };
-
   if (loading) {
     return <div>Loading...</div>;
   }

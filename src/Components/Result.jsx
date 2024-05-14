@@ -164,6 +164,7 @@ const Result = ({ data }) => {
       chartInstance.config.plugins[0].beforeDraw = plugin[0].beforeDraw;
       chartInstance.update();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monthlyPayments]);
 
   return (
