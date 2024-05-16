@@ -34,7 +34,11 @@ const Search = ({ handleSearchModal, setLocationData }) => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      fetchData(input);
+      if(input.length === 0){
+        alert("Please input a Neighborhood, City, Zip, or Address")
+      } else {
+        fetchData(input);
+      }
     }
   };
 
